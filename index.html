@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Hashtag Generator Pro – TechPatraa</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#141e30,#243b55);min-height:100vh;color:#fff}
+.header{text-align:center;padding:28px 20px 18px}
+.header h1{font-size:26px;font-weight:700;background:linear-gradient(90deg,#1D9E75,#4dd4a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{font-size:13px;color:#9db4cc;margin-top:5px}
+.container{max-width:960px;margin:0 auto;padding:0 16px 40px;display:grid;grid-template-columns:1fr 270px;gap:16px}
+.card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:18px;margin-bottom:14px}
+.card h3{font-size:11px;font-weight:700;color:#1D9E75;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:14px}
+.platform-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.ptab{padding:7px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:#9db4cc;font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
+.ptab:hover{border-color:#1D9E75;color:#4dd4a0}
+.ptab.active{background:linear-gradient(135deg,#0F6E56,#1D9E75);border-color:#1D9E75;color:#fff;font-weight:600}
+.form-group{margin-bottom:13px}
+.form-group label{font-size:12px;color:#9db4cc;margin-bottom:6px;display:block;font-weight:500}
+.form-group input,.form-group select{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;padding:9px 12px;font-size:13px;outline:none;font-family:'Inter',sans-serif;transition:border-color 0.2s}
+.form-group input:focus,.form-group select:focus{border-color:#1D9E75}
+.form-group input::placeholder{color:#6b8099}
+.form-group select option{background:#1e3a5f;color:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.slider-wrap{display:flex;align-items:center;gap:10px;margin-top:6px}
+.slider-wrap input[type=range]{flex:1;accent-color:#1D9E75;cursor:pointer}
+.slider-val{font-size:14px;color:#1D9E75;font-weight:700;min-width:30px;text-align:right}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-label{font-size:12px;color:#9db4cc}
+.toggle{width:38px;height:22px;background:rgba(255,255,255,0.15);border-radius:11px;position:relative;cursor:pointer;transition:background 0.25s;flex-shrink:0}
+.toggle.on{background:linear-gradient(135deg,#0F6E56,#1D9E75)}
+.toggle::after{content:'';width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left 0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.toggle.on::after{left:18px}
+.gen-btn{width:100%;padding:14px;background:linear-gradient(135deg,#0F6E56,#1D9E75);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;font-family:'Inter',sans-serif;transition:transform 0.15s,opacity 0.15s;letter-spacing:0.3px}
+.gen-btn:hover{opacity:0.9;transform:translateY(-1px)}
+.gen-btn:active{transform:translateY(0)}
+.err{font-size:12px;color:#ff6b6b;margin-top:5px;display:none}
+/* Output */
+.output-section{display:none}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 8px;text-align:center}
+.stat .sv{font-size:18px;font-weight:700;color:#1D9E75}
+.stat .sl{font-size:10px;color:#9db4cc;margin-top:3px;text-transform:uppercase;letter-spacing:0.8px}
+.seo-bar{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;margin-bottom:8px;overflow:hidden}
+.seo-fill{height:100%;background:linear-gradient(90deg,#0F6E56,#1D9E75);border-radius:3px;transition:width 0.6s ease}
+.warn{font-size:11px;color:#ffb347;margin-bottom:10px;padding:6px 10px;background:rgba(255,179,71,0.1);border-radius:6px;border-left:3px solid #ffb347;display:none}
+.pills-wrap{display:flex;flex-wrap:wrap;gap:8px;min-height:80px;padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;margin-bottom:14px}
+.pill{background:rgba(29,158,117,0.15);border:1px solid rgba(29,158,117,0.35);border-radius:20px;padding:5px 10px 5px 12px;font-size:12px;color:#4dd4a0;display:inline-flex;align-items:center;gap:6px;cursor:default;transition:background 0.15s}
+.pill:hover{background:rgba(29,158,117,0.25)}
+.pill .rm{cursor:pointer;color:#9db4cc;font-size:14px;line-height:1;font-weight:700}
+.pill .rm:hover{color:#ff6b6b}
+.action-btns{display:flex;gap:8px;flex-wrap:wrap}
+.abtn{padding:9px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.18);background:transparent;color:#ccc;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;font-weight:500}
+.abtn:hover{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.3)}
+.abtn.primary{background:linear-gradient(135deg,#0F6E56,#1D9E75);border-color:#1D9E75;color:#fff}
+.abtn.primary:hover{opacity:0.9}
+/* Sidebar */
+.trend-tags{display:flex;flex-wrap:wrap;gap:7px}
+.trend-tag{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:5px 11px;font-size:11px;color:#9db4cc;cursor:pointer;transition:all 0.2s}
+.trend-tag:hover{background:rgba(29,158,117,0.2);border-color:#1D9E75;color:#4dd4a0}
+.hist-list,.fav-list{list-style:none;max-height:150px;overflow-y:auto}
+.hist-list li,.fav-list li{padding:7px 10px;font-size:12px;color:#9db4cc;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;border-radius:6px;transition:all 0.15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-list li:hover,.fav-list li:hover{background:rgba(29,158,117,0.1);color:#4dd4a0;padding-left:14px}
+.empty-msg{font-size:12px;color:#6b8099;text-align:center;padding:12px 0}
+.random-btn{width:100%;padding:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#9db4cc;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:12px;transition:all 0.2s}
+.random-btn:hover{background:rgba(255,255,255,0.1);color:#fff}
+@media(max-width:680px){
+.container{grid-template-columns:1fr}
+.stats-bar{grid-template-columns:repeat(2,1fr)}
+.row2{grid-template-columns:1fr}
+.header h1{font-size:20px}
+}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#1D9E75;border-radius:2px}
+.ad-top{display:flex;justify-content:center;align-items:center;padding:10px 0 4px;min-height:60px}
+.ad-bottom{display:flex;justify-content:center;align-items:center;padding:20px 0 10px;min-height:60px}
+</style>
+</head>
+<body>
+<!-- AD TOP -->
+<div class="ad-top">
+  <script>atOptions={'key':'40481fbfeb3ccbe3f4d81eba78ba36e8','format':'iframe','height':50,'width':320,'params':{}};</script>
+  <script src="https://www.highperformanceformat.com/40481fbfeb3ccbe3f4d81eba78ba36e8/invoke.js"></script>
+</div>
+
+<div class="header">
+  <h1>⚡ Hashtag Generator Pro</h1>
+  <p>Smart platform-specific hashtags | TechPatraa Tool</p>
+</div>
+
+<div class="container">
+  <!-- LEFT COLUMN -->
+  <div>
+    <div class="card">
+      <h3>Select Platform</h3>
+      <div class="platform-tabs" id="ptabs">
+        <button class="ptab active" data-p="instagram">📸 Instagram</button>
+        <button class="ptab" data-p="youtube">▶️ YouTube</button>
+        <button class="ptab" data-p="twitter">🐦 Twitter/X</button>
+        <button class="ptab" data-p="linkedin">💼 LinkedIn</button>
+        <button class="ptab" data-p="pinterest">📌 Pinterest</button>
+      </div>
+
+      <h3>Generate Settings</h3>
+      <button class="random-btn" id="randomBtn">🎲 Random Keyword</button>
+
+      <div class="form-group">
+        <label>Main Keyword *</label>
+        <input type="text" id="kw" placeholder="e.g. Artificial Intelligence, Cricket, Food..." />
+        <div class="err" id="kwErr">⚠️ Please enter a keyword first</div>
+      </div>
+
+      <div class="row2">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="cat"></select>
+        </div>
+        <div class="form-group">
+          <label>Language</label>
+          <select id="lang">
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="mix">Mix (En+Hi)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tag Count: <strong id="countLabel" style="color:#1D9E75">30</strong></label>
+        <div class="slider-wrap">
+          <input type="range" min="5" max="50" value="30" step="1" id="countSlider"/>
+          <span class="slider-val" id="countNum">30</span>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="form-group">
+          <label>Prefix (optional)</label>
+          <input type="text" id="prefix" placeholder="e.g. india"/>
+        </div>
+        <div class="form-group">
+          <label>Suffix (optional)</label>
+          <input type="text" id="suffix" placeholder="e.g. 2025"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Blacklist Tags (comma separated)</label>
+        <input type="text" id="blacklist" placeholder="e.g. spam, follow4follow, like4like"/>
+      </div>
+
+      <div class="toggle-row">
+        <span class="toggle-label">🎯 Niche Mode (micro-niche tags only)</span>
+        <div class="toggle" id="nicheToggle"></div>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">🔥 Include Trending Tags</span>
+        <div class="toggle on" id="trendToggle"></div>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label"># Tag Type (hashtag format)</span>
+        <div class="toggle on" id="hashToggle"></div>
+      </div>
+
+      <button class="gen-btn" id="genBtn">⚡ Generate Hashtags</button>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="card output-section" id="outputCard">
+      <h3>Generated Tags</h3>
+      <div class="stats-bar">
+        <div class="stat"><div class="sv" id="sTags">0</div><div class="sl">Tags</div></div>
+        <div class="stat"><div class="sv" id="sChars">0</div><div class="sl">Chars</div></div>
+        <div class="stat"><div class="sv" id="sSeo">0%</div><div class="sl">SEO Score</div></div>
+        <div class="stat"><div class="sv" id="sLimit" style="color:#4dd4a0">OK</div><div class="sl">Limit</div></div>
+      </div>
+      <div class="seo-bar"><div class="seo-fill" id="seoFill" style="width:0%"></div></div>
+      <div class="warn" id="limitWarn"></div>
+      <div class="pills-wrap" id="pillsWrap"></div>
+      <div class="action-btns">
+        <button class="abtn primary" id="copyBtn">📋 Copy All</button>
+        <button class="abtn" id="copyListBtn">📝 As List</button>
+        <button class="abtn" id="dlTxtBtn">⬇️ TXT</button>
+        <button class="abtn" id="dlCsvBtn">📊 CSV</button>
+        <button class="abtn" id="favBtn">❤️ Save Fav</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div>
+    <div class="card">
+      <h3>🔥 Trending Now</h3>
+      <div class="trend-tags" id="trendWrap"></div>
+    </div>
+    <div class="card">
+      <h3>🕐 History</h3>
+      <ul class="hist-list" id="histList"><li class="empty-msg">No history yet</li></ul>
+    </div>
+    <div class="card">
+      <h3>❤️ Saved Favorites</h3>
+      <ul class="fav-list" id="favList"><li class="empty-msg">No favorites yet</li></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+const platforms={
+  instagram:{
+    categories:["Tech","Food","Travel","Fashion","Fitness","Business","Gaming","News","Beauty","Lifestyle","Photography","Art","Music","Dance","Comedy","Motivation"],
+    limit:30,charLimit:2200,
+    tags:{
+      Tech:["tech","technology","coding","developer","ai","programming","gadgets","innovation","software","techtips","machinelearning","cybersecurity","cloudcomputing","startup","digitalworld","iphonephotography"],
+      Food:["foodie","food","foodphotography","instafood","homemade","recipe","cooking","yummy","delicious","foodlover","healthyfood","streetfood","indianfood","cheflife","foodblogger","tasty"],
+      Travel:["travel","wanderlust","travelgram","explore","adventure","traveling","vacation","instatravel","trip","travelphotography","backpacking","indiatravel","nature","roadtrip","travelblogger","tourism"],
+      Fashion:["fashion","style","ootd","instafashion","fashionblogger","outfitoftheday","streetstyle","fashionista","trendy","styleinspo","lookbook","outfit","wiwt","casualstyle","sustainable","moda"],
+      Fitness:["fitness","gym","workout","fit","health","training","motivation","bodybuilding","fitnessmotivation","healthylifestyle","exercise","fitlife","gymlife","personaltrainer","crossfit","yoga"],
+      Business:["business","entrepreneur","startup","marketing","success","motivation","businesstips","branding","smallbusiness","digitalmarketing","mindset","hustle","growth","leadership","businessowner","money"],
+      Gaming:["gaming","gamer","game","videogames","ps5","xbox","pcgaming","esports","streamer","twitch","gamingcommunity","mobilegaming","fortnite","minecraft","fps","rpg"],
+      News:["news","breaking","trending","viral","update","today","currentaffairs","worldnews","politics","economy","socialmedia","digitalindia","factcheck","latestnews","media","journalism"],
+      Beauty:["beauty","makeup","skincare","cosmetics","beautyblogger","glam","lipstick","eyeshadow","beautyinfluencer","selfcare","natural","glow","skincareRoutine","beautyTips","crueltyFree","vegan"],
+      Lifestyle:["lifestyle","life","daily","routine","morningroutine","wellbeing","mindfulness","happiness","positivity","selfcare","balance","wellness","inspired","luxurylife","aesthetic","vibes"],
+      Photography:["photography","photo","photographer","photooftheday","picoftheday","portrait","landscape","streetphotography","nature","lightroom","canon","nikon","goldenhour","blackandwhite","raw","editing"],
+      Art:["art","artist","artwork","drawing","painting","illustration","digitalart","sketch","creative","artoftheday","instaart","contemporaryart","artgallery","watercolor","pencil","abstractart"],
+      Music:["music","musician","song","singer","producer","studio","beats","hiphop","pop","indie","newmusic","musicproducer","playlist","live","concert","bollywood"],
+      Dance:["dance","dancer","dancing","choreography","bollywood","hiphop","freestyle","performance","dancecover","dancevideo","reels","dancechallenge","bharatanatyam","contemporary","ballet","fusion"],
+      Comedy:["comedy","funny","memes","humor","laugh","viral","reels","trending","jokes","comedian","skit","standup","entertainment","fun","lol","relatable"],
+      Motivation:["motivation","inspire","mindset","success","goals","hustle","positivity","quote","dailymotivation","believe","nevergiveup","grind","entrepreneur","growth","focus","winning"]
+    }
+  },
+  youtube:{
+    categories:["Tech","Food","Travel","Fashion","Fitness","Business","Gaming","News","Education","Finance","DIY","Reviews","Vlogs","Cooking","Sports","Movies"],
+    limit:15,charLimit:5000,
+    tags:{
+      Tech:["technology","programming","coding","tutorial","howto","ai","machinelearning","techreview","unboxing","gadgets","smartphone","laptop","software","cybersecurity","developer","techtutorial"],
+      Food:["food","recipe","cooking","foodie","homemade","tasty","yummy","foodreview","mukbang","streetfood","indianfood","chef","kitchen","easyrecipe","healthyfood","asmr"],
+      Travel:["travel","vlog","adventure","explore","tourism","wanderlust","travelguide","roadtrip","backpacking","budget","indiatravel","traveltips","destination","solo","travelvlog","international"],
+      Fashion:["fashion","style","ootd","haul","lookbook","outfit","trendy","fashionvlog","streetstyle","thrift","sustainable","mensfashion","womensfashion","shopping","wardrobe","fashiontips"],
+      Fitness:["fitness","workout","gym","exercise","training","health","weightloss","muscle","homeworkout","yoga","crossfit","cardio","nutrition","diet","bodybuilding","fitnesstips"],
+      Business:["business","entrepreneurship","startup","investment","marketing","success","money","finance","sidehustle","passiveincome","digitalmarketing","ecommerce","branding","leadership","productivity","businessideas"],
+      Gaming:["gaming","gameplay","walkthrough","review","ps5","xbox","pcgaming","esports","streamer","letsplay","tutorial","tips","tricks","mobilegaming","newgame","gamereview"],
+      News:["news","currentaffairs","breaking","politics","economy","worldnews","india","analysis","update","podcast","interview","debate","factcheck","media","journalism","trending"],
+      Education:["education","learning","tutorial","study","school","college","knowledge","skills","howto","explained","science","math","history","geography","competitive","upsc"],
+      Finance:["finance","money","investment","stock","crypto","mutualfunds","savings","budget","financialfreedom","wealth","trading","sip","nifty","sensex","tax","insurance"],
+      DIY:["diy","craft","handmade","tutorial","howto","creative","project","upcycle","homemade","woodworking","decor","art","make","build","recycle","easy"],
+      Reviews:["review","unboxing","honest","vs","comparison","best","top5","buyingguide","recommendation","product","opinion","worth","rating","detailed","2025","shouldyoubuy"],
+      Vlogs:["vlog","daily","life","routine","dayinmylife","challenge","collab","qa","storytime","reaction","trending","viral","youtube","content","creator","subscribe"],
+      Cooking:["cooking","recipe","chef","kitchen","food","homemade","easy","quick","healthy","indian","street","dessert","breakfast","dinner","lunch","asmr"],
+      Sports:["sports","cricket","football","ipl","fifa","highlights","match","analysis","player","team","tournament","news","live","score","prediction","reaction"],
+      Movies:["movies","film","review","bollywood","hollywood","trailer","explained","top10","recommendation","cinema","actor","director","ott","netflix","amazon","disney"]
+    }
+  },
+  twitter:{
+    categories:["Tech","Business","News","Gaming","Politics","Sports","Entertainment","Science","Crypto","Movies"],
+    limit:5,charLimit:280,
+    tags:{
+      Tech:["tech","ai","coding","developer","startup","innovation","software","programming","machinelearning","cybersecurity"],
+      Business:["business","entrepreneur","marketing","success","startup","leadership","money","growth","branding","digitalmarketing"],
+      News:["news","breaking","trending","viral","update","currentaffairs","india","worldnews","politics","factcheck"],
+      Gaming:["gaming","gamer","esports","streamer","videogames","pcgaming","mobilegaming","fps","rpg","gamingcommunity"],
+      Politics:["politics","democracy","election","government","policy","india","parliament","opposition","vote","constitution"],
+      Sports:["sports","cricket","football","ipl","fifa","match","team","player","tournament","highlights"],
+      Entertainment:["entertainment","bollywood","movies","music","celebrity","trending","viral","memes","pop","culture"],
+      Science:["science","space","isro","nasa","research","biology","physics","climate","environment","innovation"],
+      Crypto:["crypto","bitcoin","ethereum","blockchain","defi","nft","web3","trading","altcoin","bull"],
+      Movies:["movies","bollywood","hollywood","film","review","trailer","ott","netflix","cinema","actor"]
+    }
+  },
+  linkedin:{
+    categories:["Tech","Business","News","Marketing","HR","Leadership","Finance","Startups","Career","Management","Sales"],
+    limit:10,charLimit:3000,
+    tags:{
+      Tech:["technology","ai","programming","developer","innovation","software","machinelearning","cybersecurity","cloud","digital"],
+      Business:["business","entrepreneur","strategy","growth","success","productivity","management","corporate","company","networking"],
+      News:["news","industry","update","trends","economy","market","business","global","india","innovation"],
+      Marketing:["marketing","digitalmarketing","branding","content","socialmedia","seo","advertising","growth","strategy","campaign"],
+      HR:["hr","humanresources","hiring","recruitment","talent","culture","diversity","employee","workplace","people"],
+      Leadership:["leadership","leader","management","inspire","vision","strategy","executive","ceo","growth","mindset"],
+      Finance:["finance","investment","wealth","money","economy","market","stock","banking","fintech","accounting"],
+      Startups:["startup","entrepreneur","founder","venture","funding","innovation","scale","pitch","ecosystem","mvp"],
+      Career:["career","job","opportunity","professional","skills","growth","resume","interview","networking","success"],
+      Management:["management","project","agile","strategy","team","operations","process","efficiency","planning","execution"],
+      Sales:["sales","revenue","growth","b2b","client","deal","pipeline","target","conversion","crm"]
+    }
+  },
+  pinterest:{
+    categories:["Food","Travel","Fashion","Fitness","Home Decor","DIY","Wedding","Beauty","Quotes","Kids","Gardening"],
+    limit:20,charLimit:500,
+    tags:{
+      Food:["recipes","foodie","cooking","healthy","homemade","easyrecipes","mealprep","desserts","vegetarian","indianfood","snacks","dinner","lunch","breakfast","baking","foodphotography"],
+      Travel:["travel","wanderlust","destinations","adventure","nature","explore","vacation","roadtrip","beach","mountains","europe","asia","india","backpacking","solo","travelinspiration"],
+      Fashion:["fashion","style","ootd","outfits","aesthetic","vintage","boho","minimalist","streetstyle","trendy","capsulewardrobe","sustainable","accessories","jewelry","shoes","bags"],
+      Fitness:["fitness","workout","yoga","health","motivation","exercise","homeworkout","pilates","weightloss","healthy","running","gym","strength","cardio","wellness","mindfulness"],
+      "Home Decor":["homedecor","interior","design","home","cozy","aesthetic","diy","boho","modern","minimalist","bedroom","living","kitchen","bathroom","plants","lighting"],
+      DIY:["diy","craft","handmade","creative","tutorial","project","homemade","upcycle","art","decor","easy","kids","gifts","recycle","sewing","woodworking"],
+      Wedding:["wedding","bride","decor","flowers","gown","ceremony","reception","ideas","planning","inspiration","boho","traditional","indian","elegant","invitation","venue"],
+      Beauty:["beauty","skincare","makeup","hair","nails","selfcare","natural","glow","routine","tips","products","vegan","crueltyfree","organic","antiaging","glam"],
+      Quotes:["quotes","motivation","inspiration","life","love","mindset","positivity","success","wisdom","faith","happiness","growth","mindfulness","daily","affirmations","goals"],
+      Kids:["kids","parenting","baby","toddler","activities","education","play","crafts","diy","school","learning","fun","toys","nursery","family","pregnancy"],
+      Gardening:["gardening","plants","garden","flowers","nature","organic","grow","diy","outdoor","herbs","vegetables","urban","indoor","sustainable","green","cottage"]
+    }
+  }
+};
+
+const hindiTags={
+  Tech:["तकनीक","आर्टिफिशियलइंटेलिजेंस","कोडिंग","डिजिटल","सॉफ्टवेयर","नवाचार"],
+  Food:["खाना","रेसिपी","भोजन","खानपान","स्वाद","पाककला"],
+  Travel:["यात्रा","सफर","घूमना","पर्यटन","भारत","देशभक्ति"],
+  Fashion:["फैशन","स्टाइल","ट्रेंड","पहनावा","डिजाइन"],
+  Fitness:["फिटनेस","स्वास्थ्य","व्यायाम","योग","सेहत"],
+  Business:["व्यापार","उद्योग","सफलता","कारोबार","उद्यम"],
+  Gaming:["गेमिंग","खेल","गेम","गेमर","एस्पोर्ट्स"],
+  News:["समाचार","खबर","ताजा","ब्रेकिंग","अपडेट"],
+  default:["भारत","हिंदी","दैनिक","वायरल","ट्रेंडिंग","इंडिया"]
+};
+
+const trending={
+  instagram:["#reels","#explore","#viral","#trending","#fyp","#collab","#aesthetic","#vibes","#instagood","#photooftheday"],
+  youtube:["#shorts","#viral","#trending","#subscribe","#youtube","#new","#2025","#reaction","#review","#tutorial"],
+  twitter:["#trending","#viral","#breaking","#india","#news","#today","#thread","#follow","#opinion","#rt"],
+  linkedin:["#networking","#growth","#career","#hiring","#opentowork","#leadership","#innovation","#business","#linkedin","#professional"],
+  pinterest:["#inspiration","#aesthetic","#ideas","#diy","#creative","#beautiful","#design","#love","#art","#home"]
+};
+
+const randomKws=["AI","Technology","Finance","Cricket","Gaming","Travel","Food","Fitness","Health","Music","Blogging","Photography","Fashion","Education","Business","Coding","Yoga","Movies","Startup","Nature"];
+
+let activePlatform="instagram";
+let tags=[];
+let history=[];
+let favorites=[];
+let nicheMode=false;
+let trendMode=true;
+let hashMode=true;
+
+// Platform tabs
+document.querySelectorAll(".ptab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".ptab").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activePlatform=btn.dataset.p;
+    updateCatDropdown();
+    updateTrending();
+  });
+});
+
+// Slider
+const slider=document.getElementById("countSlider");
+slider.addEventListener("input",()=>{
+  document.getElementById("countLabel").textContent=slider.value;
+  document.getElementById("countNum").textContent=slider.value;
+});
+
+// Toggles
+function initToggle(id,stateVar,setter){
+  document.getElementById(id).addEventListener("click",function(){
+    setter(!stateVar());
+    this.classList.toggle("on",stateVar());
+  });
+}
+document.getElementById("nicheToggle").addEventListener("click",function(){nicheMode=!nicheMode;this.classList.toggle("on",nicheMode);});
+document.getElementById("trendToggle").addEventListener("click",function(){trendMode=!trendMode;this.classList.toggle("on",trendMode);});
+document.getElementById("hashToggle").addEventListener("click",function(){hashMode=!hashMode;this.classList.toggle("on",hashMode);});
+
+// Random
+document.getElementById("randomBtn").addEventListener("click",()=>{
+  document.getElementById("kw").value=randomKws[Math.floor(Math.random()*randomKws.length)];
+  generate();
+});
+
+// Generate
+document.getElementById("genBtn").addEventListener("click",generate);
+
+function updateCatDropdown(){
+  const sel=document.getElementById("cat");
+  const cats=platforms[activePlatform].categories;
+  sel.innerHTML=cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+}
+
+function updateTrending(){
+  const wrap=document.getElementById("trendWrap");
+  const tr=trending[activePlatform]||[];
+  wrap.innerHTML=tr.map(t=>`<span class="trend-tag" onclick="useTrendTag('${t}')">${t}</span>`).join("");
+}
+
+function useTrendTag(t){
+  const kw=document.getElementById("kw");
+  if(!kw.value) kw.value=t.replace("#","");
+  else generate();
+}
+
+function generate(){
+  const kw=document.getElementById("kw").value.trim();
+  const errEl=document.getElementById("kwErr");
+  if(!kw){errEl.style.display="block";return;}
+  errEl.style.display="none";
+
+  const cat=document.getElementById("cat").value;
+  const lang=document.getElementById("lang").value;
+  const total=parseInt(slider.value);
+  const pfx=document.getElementById("prefix").value.trim().toLowerCase().replace(/\s+/g,"");
+  const sfx=document.getElementById("suffix").value.trim().toLowerCase().replace(/\s+/g,"");
+  const bl=document.getElementById("blacklist").value.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);
+
+  const p=platforms[activePlatform];
+  const catTags=p.tags[cat]||p.tags[Object.keys(p.tags)[0]];
+  const kwClean=kw.replace(/\s+/g,"").toLowerCase();
+
+  let pool=[];
+
+  // Keyword combos
+  pool.push(kwClean);
+  if(pfx&&pfx!==kwClean) pool.push(pfx+kwClean);
+  if(sfx&&sfx!==kwClean) pool.push(kwClean+sfx);
+  if(pfx&&sfx) pool.push(pfx+kwClean+sfx);
+
+  // Platform+category based tags
+  catTags.forEach(t=>{
+    const base=t.replace(/\s+/g,"").toLowerCase();
+    pool.push(base);
+    if(!nicheMode) pool.push(base+kwClean);
+    pool.push(kwClean+base);
+    if(pfx) pool.push(pfx+base);
+    if(sfx) pool.push(base+sfx);
+  });
+
+  // Trending
+  if(trendMode){
+    (trending[activePlatform]||[]).forEach(t=>{
+      pool.push(t.replace("#","").toLowerCase());
+    });
+  }
+
+  // Hindi
+  if(lang==="hi"||lang==="mix"){
+    const ht=hindiTags[cat]||hindiTags.default;
+    ht.forEach(t=>pool.push(t));
+  }
+
+  // Filter & dedupe
+  pool=[...new Set(pool)]
+    .filter(t=>t&&t.length>1)
+    .filter(t=>!bl.some(b=>t.includes(b)));
+
+  if(nicheMode) pool=pool.filter(t=>t.replace(/[^\w]/g,"").length>6);
+
+  pool=pool.slice(0,total);
+
+  const prefix=hashMode?"#":"";
+  tags=pool.map(t=>prefix+t);
+
+  renderPills();
+  updateStats();
+  saveHistory(kw);
+  document.getElementById("outputCard").style.display="block";
+  document.getElementById("outputCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+function renderPills(){
+  const wrap=document.getElementById("pillsWrap");
+  if(!tags.length){wrap.innerHTML='<span style="color:#6b8099;font-size:12px">No tags generated</span>';return;}
+  wrap.innerHTML=tags.map((t,i)=>`<span class="pill">${t}<span class="rm" onclick="removeTag(${i})">×</span></span>`).join("");
+}
+
+function removeTag(i){
+  tags.splice(i,1);
+  renderPills();
+  updateStats();
+}
+
+function updateStats(){
+  const p=platforms[activePlatform];
+  const txt=tags.join(" ");
+  const chars=txt.length;
+  const count=tags.length;
+
+  document.getElementById("sTags").textContent=count;
+  document.getElementById("sChars").textContent=chars;
+
+  // Real SEO score
+  let seo=0;
+  if(count>=3) seo+=15;
+  if(count>=Math.floor(p.limit*0.4)) seo+=15;
+  if(count<=p.limit) seo+=20;
+  if(chars<=p.charLimit) seo+=20;
+  if(tags.some(t=>t.replace(/[^a-z]/gi,"").length>=5&&t.replace(/[^a-z]/gi,"").length<=20)) seo+=15;
+  if(tags.length>0&&tags[0].toLowerCase().includes(document.getElementById("kw").value.replace(/\s+/g,"").toLowerCase())) seo+=15;
+
+  document.getElementById("sSeo").textContent=seo+"%";
+  document.getElementById("seoFill").style.width=seo+"%";
+
+  const limitEl=document.getElementById("sLimit");
+  const warnEl=document.getElementById("limitWarn");
+  if(count>p.limit){
+    limitEl.textContent="Over!";
+    limitEl.style.color="#ff6b6b";
+    warnEl.style.display="block";
+    warnEl.textContent=`⚠️ ${activePlatform.charAt(0).toUpperCase()+activePlatform.slice(1)} recommends max ${p.limit} tags. You have ${count} tags.`;
+  }else{
+    limitEl.textContent="OK";
+    limitEl.style.color="#4dd4a0";
+    warnEl.style.display="none";
+  }
+}
+
+// Action buttons
+document.getElementById("copyBtn").addEventListener("click",()=>{
+  if(!tags.length)return;
+  navigator.clipboard.writeText(tags.join(" "));
+  const b=document.getElementById("copyBtn");
+  b.textContent="✅ Copied!";
+  setTimeout(()=>{b.textContent="📋 Copy All";},2000);
+});
+
+document.getElementById("copyListBtn").addEventListener("click",()=>{
+  if(!tags.length)return;
+  navigator.clipboard.writeText(tags.map((t,i)=>`${i+1}. ${t}`).join("\n"));
+  const b=document.getElementById("copyListBtn");
+  b.textContent="✅ Copied!";
+  setTimeout(()=>{b.textContent="📝 As List";},2000);
+});
+
+document.getElementById("dlTxtBtn").addEventListener("click",()=>{
+  if(!tags.length)return;
+  const content=`Hashtags for: ${document.getElementById("kw").value}\nPlatform: ${activePlatform}\nCategory: ${document.getElementById("cat").value}\n\n${tags.join(" ")}\n\nGenerated by TechPatraa Hashtag Generator Pro`;
+  download(content,"hashtags.txt","text/plain");
+});
+
+document.getElementById("dlCsvBtn").addEventListener("click",()=>{
+  if(!tags.length)return;
+  const kw=document.getElementById("kw").value;
+  const cat=document.getElementById("cat").value;
+  const csv="Tag,Platform,Category,Keyword\n"+tags.map(t=>`"${t}","${activePlatform}","${cat}","${kw}"`).join("\n");
+  download(csv,"hashtags.csv","text/csv");
+});
+
+document.getElementById("favBtn").addEventListener("click",()=>{
+  if(!tags.length)return;
+  favorites.unshift({text:tags.join(" "),platform:activePlatform,kw:document.getElementById("kw").value});
+  if(favorites.length>20)favorites=favorites.slice(0,20);
+  renderFavorites();
+  const b=document.getElementById("favBtn");
+  b.textContent="✅ Saved!";
+  setTimeout(()=>{b.textContent="❤️ Save Fav";},2000);
+});
+
+function download(content,filename,type){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=filename;
+  a.click();
+}
+
+function saveHistory(kw){
+  history.unshift(kw);
+  history=[...new Set(history)].slice(0,20);
+  renderHistory();
+}
+
+function renderHistory(){
+  const ul=document.getElementById("histList");
+  if(!history.length){ul.innerHTML='<li class="empty-msg">No history yet</li>';return;}
+  ul.innerHTML=history.map(h=>`<li onclick="document.getElementById('kw').value='${h}';generate()" title="Click to regenerate">${h}</li>`).join("");
+}
+
+function renderFavorites(){
+  const ul=document.getElementById("favList");
+  if(!favorites.length){ul.innerHTML='<li class="empty-msg">No favorites yet</li>';return;}
+  ul.innerHTML=favorites.map(f=>`<li title="${f.text}">[${f.platform}] ${f.kw} – ${f.text.substring(0,50)}...</li>`).join("");
+}
+
+// Init
+updateCatDropdown();
+updateTrending();
+</script>
+
+<!-- AD BOTTOM -->
+<div class="ad-bottom">
+  <script async="async" data-cfasync="false" src="https://pl29703535.effectivecpmnetwork.com/d6326e2bc11513c8d9ebfbc2f5913f5f/invoke.js"></script>
+  <div id="container-d6326e2bc11513c8d9ebfbc2f5913f5f"></div>
+</div>
+</body>
+</html>
